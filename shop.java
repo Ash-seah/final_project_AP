@@ -1,19 +1,26 @@
 import java.util.*;
 
-public class shop {
+public class Shop {
 
-    HashMap<String, String> user_pass = new HashMap<>();
+//    static HashMap<String, String> user_pass = new HashMap<>();
+//    static HashMap<String, Account> user_acc = new HashMap<>();
 
     private String name;
     private String webAddress;
     // use String for number because of potential problems with an int number
     private String supportNumber;
 
-    ArrayList<Account> customers = new ArrayList<>();
+    static ArrayList<Account> customers = new ArrayList<>();
     ArrayList<Product> products = new ArrayList<>();
     ArrayList<Order> orders = new ArrayList<>();
 
     static int totalProfit;
+
+    public Shop(String name, String webAddress, String supportNumber) {
+        this.name = name;
+        this.webAddress = webAddress;
+        this.supportNumber = supportNumber;
+    }
 
     public void setName(String name) {
         this.name = name;
