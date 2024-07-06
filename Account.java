@@ -11,7 +11,7 @@ public class Account {
     HashMap<Product, Integer> shoppingCart = new HashMap<>();
     ArrayList<Product> purchasedProducts = new ArrayList<>();
 
-    int balance = 0;
+    double balance = 0.0;
 
     public Account(String username, String password, String emailAddress, String phoneNumber, String address, Access access) {
         this.username = username;
@@ -25,9 +25,15 @@ public class Account {
 }
 
 class Admin extends Account {
+    public void accept_fund_request(Request request){
+        request.requester.balance += request.amount;
+    }
+    public void approve_selling_cert(Request request){
+        request.seller.selling_cert = true;
+    }
 
-    public Admin(String username, String password, String emailAddress, String phoneNumber, String address, Access access) {
-        super(username, password, emailAddress, phoneNumber, address, access.ADMIN);
+    public Admin(String username, String password, String emailAddress) {
+        super(username, password, emailAddress, null, null, Access.ADMIN);
         Shop.customers.add(this);
     }
 
@@ -70,6 +76,7 @@ class Buyer extends Account {
 }
 
 class Seller extends Account {
+    boolean selling_cert = false;
     ArrayList<Product> sellerProducts = new ArrayList<>();
 
     public Seller(String username, String password) {

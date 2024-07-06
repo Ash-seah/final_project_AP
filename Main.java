@@ -6,7 +6,22 @@ public class Main {
         Scanner scn = new Scanner(System.in);
 
         //test zone
+        Category beauty = new Category("beauty");
+        Category clothes = new Category("clothes");
+        Category electronics = new Category("electronics");
+        Category furniture = new Category("furniture");
+        Category books = new Category("books");
 
+        beauty.products.add(new Product("hair dryer", 46.15, 10, beauty));
+        beauty.products.add(new Product("lipstick", 5.48, 10, beauty));
+        clothes.products.add(new Product("jeans", 3.98, 10, clothes));
+        clothes.products.add(new Product("tshirt", 2.98, 10, clothes));
+        electronics.products.add(new Product("Galaxy A110 super duper", 9000.0 , 10, electronics));
+        electronics.products.add(new Product("SAMSUNG TV", 499.99, 10, electronics));
+        furniture.products.add(new Product("SAMSUNG smart couch", 238.90, 10, furniture));
+        furniture.products.add(new Product("intelligent chair", 993.56, 10, furniture));
+        books.products.add(new Product("meditations", 999.99, 10, books));
+        books.products.add(new Product("metamorphosis", 29.99, 10, books));
         //test zone
 
         // register/login menu
@@ -52,29 +67,6 @@ public class Main {
         while (currAccount instanceof Buyer){
             // TODO: add comment
             // test zone
-            Category beauty = new Category("beauty");
-            Category clothes = new Category("clothes");
-            Category electronics = new Category("electronics");
-            Category furniture = new Category("furniture");
-            Category books = new Category("books");
-
-            Category.categories.add(beauty);
-            Category.categories.add(clothes);
-            Category.categories.add(electronics);
-            Category.categories.add(furniture);
-            Category.categories.add(books);
-
-            beauty.products.add(new Product("hair dryer", 46.15, 10, beauty));
-            beauty.products.add(new Product("lipstick", 5.48, 10, beauty));
-            clothes.products.add(new Product("jeans", 3.98, 10, clothes));
-            clothes.products.add(new Product("tshirt", 2.98, 10, clothes));
-            electronics.products.add(new Product("Galaxy A110 super duper", 9000.0 , 10, electronics));
-            electronics.products.add(new Product("SAMSUNG TV", 499.99, 10, electronics));
-            furniture.products.add(new Product("SAMSUNG smart couch", 238.90, 10, furniture));
-            furniture.products.add(new Product("intelligent chair", 993.56, 10, furniture));
-            books.products.add(new Product("meditations", 999.99, 10, books));
-            books.products.add(new Product("metamorphosis", 29.99, 10, books));
-
             currAccount.shoppingCart.put(books.products.get(0), 2);
             currAccount.shoppingCart.put(beauty.products.get(0), 4);
             currAccount.shoppingCart.put(electronics.products.get(0), 5);
@@ -97,10 +89,11 @@ public class Main {
             if (choice == 2){
                 System.out.println("amount:");
                 int amount = scn.nextInt();
-                new Request(currAccount, amount);
+                new Request(((Buyer) currAccount), amount);
                 System.out.println("your funds will be transferred once an admin approves your request.");
             }
 
+            // TODO: add to shopping cart
             // see products
             if (choice == 3){
                 int index = 1;
@@ -121,6 +114,7 @@ public class Main {
 
             }
 
+            //TODO: buy
             // shopping cart
             if (choice == 5){
                 int index = 1;
@@ -142,27 +136,12 @@ public class Main {
         // seller menu
         while (currAccount instanceof Seller){
             //test zone
-            Category beauty = new Category("beauty");
-            Category clothes = new Category("clothes");
-            Category electronics = new Category("electronics");
-            Category furniture = new Category("furniture");
-            Category books = new Category("books");
 
-            beauty.products.add(new Product("hair dryer", 46.15, 10, beauty));
-            beauty.products.add(new Product("lipstick", 5.48, 10, beauty));
-            clothes.products.add(new Product("jeans", 3.98, 10, clothes));
-            clothes.products.add(new Product("tshirt", 2.98, 10, clothes));
-            electronics.products.add(new Product("Galaxy A110 super duper", 9000.0 , 10, electronics));
-            electronics.products.add(new Product("SAMSUNG TV", 499.99, 10, electronics));
-            furniture.products.add(new Product("SAMSUNG smart couch", 238.90, 10, furniture));
-            furniture.products.add(new Product("intelligent chair", 993.56, 10, furniture));
-            books.products.add(new Product("meditations", 999.99, 10, books));
-            books.products.add(new Product("metamorphosis", 29.99, 10, books));
-
-            currAccount.shoppingCart.put(books.products.get(0), 2);
-            currAccount.shoppingCart.put(beauty.products.get(0), 4);
-            currAccount.shoppingCart.put(electronics.products.get(0), 5);
             //test zone
+
+            // request selling certificate
+            new Request((Seller) currAccount);
+
             System.out.println("1 - edit profile \n2 - available products \n3 - logout");
             int n = scn.nextInt();
 
@@ -176,7 +155,7 @@ public class Main {
             }
 
             // available products
-            if (n == 2){
+            if (n == 2 && ((Seller) currAccount).selling_cert){
                 ((Seller) currAccount).display_available_products();
                 System.out.println("1 - add product \n2 - remove product");
                 int choice = scn.nextInt();
@@ -213,6 +192,57 @@ public class Main {
                         ((Seller) currAccount).sellerProducts.remove(subchoice - 1);
                     }
                 }
+            }
+        }
+
+        while (currAccount instanceof Admin){
+            System.out.println("1 - promote to admin \n2 - add fund \n3 - fund requests \n4 - orders \n5 - certificates \n6 - logout");
+            int choice = scn.nextInt();
+
+            // promote to admin
+            if (choice == 1){
+                System.out.println("enter the username of the account of the user that you wish to promote:");
+                String username = scn.next();
+                Account newAdmin = Shop.find_account(username);
+                new Admin(newAdmin.username, newAdmin.password, newAdmin.emailAddress);
+                Shop.customers.remove(newAdmin);
+            }
+
+            // TODO: unique usernames
+            // add fund
+            if (choice == 2){
+                System.out.println("username:");
+                String username = scn.next();
+                System.out.println("amount to increase:");
+                double amountToIncrease = scn.nextDouble();
+                Shop.find_account(username).balance += amountToIncrease;
+            }
+
+            // fund requests
+            if (choice == 3){
+                Request.display_fund_requests();
+                int subChoice = scn.nextInt();
+                ((Admin) currAccount).accept_fund_request(Request.fundRequestsList.get(subChoice - 1));
+                Request.fundRequestsList.remove(subChoice - 1);
+
+            }
+
+            // orders
+            if (choice == 4){
+
+            }
+
+            // certificates
+            if (choice == 5){
+                Request.display_selling_certs();
+                int subChoice = scn.nextInt();
+                ((Admin) currAccount).approve_selling_cert(Request.sellingCertRequestsList.get(subChoice - 1));
+                Request.fundRequestsList.remove(subChoice - 1);
+            }
+
+            // logout
+            if (choice == 6){
+                currAccount = null;
             }
         }
 

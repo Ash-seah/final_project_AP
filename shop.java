@@ -11,10 +11,17 @@ public class Shop {
     private String supportNumber;
 
     static ArrayList<Account> customers = new ArrayList<>();
-    ArrayList<Product> products = new ArrayList<>();
-    ArrayList<Request> orders = new ArrayList<>();
 
-    static int totalProfit;
+    static double totalProfit;
+
+    public static Account find_account(String username){
+        for (Account account : customers){
+            if (username.equals(account.username)){
+                return account;
+            }
+        }
+        return null;
+    }
 
     public Shop(String name, String webAddress, String supportNumber) {
         this.name = name;
