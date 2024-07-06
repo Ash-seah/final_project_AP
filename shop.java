@@ -12,7 +12,7 @@ public class Shop {
 
     static ArrayList<Account> customers = new ArrayList<>();
     ArrayList<Product> products = new ArrayList<>();
-    ArrayList<Order> orders = new ArrayList<>();
+    ArrayList<Request> orders = new ArrayList<>();
 
     static int totalProfit;
 
