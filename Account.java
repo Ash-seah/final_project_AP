@@ -32,6 +32,10 @@ class Admin extends Account {
         request.seller.selling_cert = true;
     }
 
+    public void approve_order(Order order){
+        order.buyer.balance -= order.totalprice;
+    }
+
     public Admin(String username, String password, String emailAddress) {
         super(username, password, emailAddress, null, null, Access.ADMIN);
         Shop.customers.add(this);

@@ -108,11 +108,35 @@ public class Main {
                         System.out.println(index + " - " + product.name + " ----- " + "€" + product.price);
                         index += 1;
                     }
+                    int subsubchoice = scn.nextInt();
+                    Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).displayProduct();
+                    System.out.println(" ------------------------------- ");
+                    Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).display_comments();
+
+                    int subsubsubchoice = scn.nextInt();
+                    if (subsubsubchoice == 1){
+                        ((Buyer) currAccount).addToCart(Category.categories.get(subChoice - 1).products.get(subsubchoice - 1));
+                    }
+                    if (subsubsubchoice == 2){
+                        //back
+                    }
                 }
 
                 // search for a product
                 if (choice == 4) {
-
+                    System.out.println("enter product name:");
+                    String name = scn.next();
+                    Product searched_for_product = Shop.find_product(name);
+                    searched_for_product.displayProduct();
+                    searched_for_product.display_comments();
+                    System.out.println("1 - Buy \n2 - back");
+                    int choicechoice = scn.nextInt();
+                    if (choicechoice == 1){
+                        ((Buyer) currAccount).addToCart(searched_for_product);
+                    }
+                    if (choicechoice == 2){
+                        // back
+                    }
                 }
 
                 //TODO: buy
@@ -126,6 +150,19 @@ public class Main {
                         index += 1;
                     }
                     System.out.println("total price is: " + totalPrice);
+                    System.out.println("1 - Buy \n2 - Back");
+                    int choice2 = scn.nextInt();
+                    if (choice2 == 1){
+                        if (currAccount.balance > totalPrice){
+                            new Order((Buyer) currAccount, totalPrice);
+                        }
+                        else {
+                            System.out.println("insufficient balance");
+                        }
+                    }
+                    if (choice2 == 2){
+                        // back
+                    }
                 }
 
                 // logout
@@ -229,7 +266,10 @@ public class Main {
 
                 // orders
                 if (choice == 4) {
-
+                    Order.display_orders();
+                    int subchoice = scn.nextInt();
+                    ((Admin) currAccount).approve_order(Order.orders.get(subchoice - 1));
+                    Order.orders.remove(subchoice - 1);
                 }
 
                 // certificates

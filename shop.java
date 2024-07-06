@@ -11,8 +11,18 @@ public class Shop {
     private String supportNumber;
 
     static ArrayList<Account> customers = new ArrayList<>();
+    static ArrayList<Product> products = new ArrayList<>();
 
     static double totalProfit;
+
+    public static Product find_product(String name){
+        for (Product product : Shop.products){
+            if (product.name.equals(name)){
+                return product;
+            }
+        }
+        return null;
+    }
 
     public static Account find_account(String username){
         for (Account account : customers){
