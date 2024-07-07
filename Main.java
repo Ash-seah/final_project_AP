@@ -2,6 +2,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Shop shop = new Shop("ashkanland", "www.ashkan.com", "09101641067");
+        Admin admin = new Admin("admin", "admin", "admin@gmail.com");
         Account currAccount = null;
         Scanner scn = new Scanner(System.in);
 
@@ -12,16 +13,16 @@ public class Main {
         Category furniture = new Category("furniture");
         Category books = new Category("books");
 
-        beauty.products.add(new Product("hair dryer", 46.15, 10, beauty));
-        beauty.products.add(new Product("lipstick", 5.48, 10, beauty));
-        clothes.products.add(new Product("jeans", 3.98, 10, clothes));
-        clothes.products.add(new Product("tshirt", 2.98, 10, clothes));
-        electronics.products.add(new Product("Galaxy A110 super duper", 9000.0, 10, electronics));
-        electronics.products.add(new Product("SAMSUNG TV", 499.99, 10, electronics));
-        furniture.products.add(new Product("SAMSUNG smart couch", 238.90, 10, furniture));
-        furniture.products.add(new Product("intelligent chair", 993.56, 10, furniture));
-        books.products.add(new Product("meditations", 999.99, 10, books));
-        books.products.add(new Product("metamorphosis", 29.99, 10, books));
+//        beauty.products.add(new Product("hair dryer", 46.15, 10, beauty));
+//        beauty.products.add(new Product("lipstick", 5.48, 10, beauty));
+//        clothes.products.add(new Product("jeans", 3.98, 10, clothes));
+//        clothes.products.add(new Product("tshirt", 2.98, 10, clothes));
+//        electronics.products.add(new Product("Galaxy A110 super duper", 9000.0, 10, electronics));
+//        electronics.products.add(new Product("SAMSUNG TV", 499.99, 10, electronics));
+//        furniture.products.add(new Product("SAMSUNG smart couch", 238.90, 10, furniture));
+//        furniture.products.add(new Product("intelligent chair", 993.56, 10, furniture));
+//        books.products.add(new Product("meditations", 999.99, 10, books));
+//        books.products.add(new Product("metamorphosis", 29.99, 10, books));
         //test zone
 
         // register/login menu
@@ -84,6 +85,7 @@ public class Main {
                     currAccount.emailAddress = scn.next();
                     currAccount.phoneNumber = scn.next();
                     currAccount.address = scn.next();
+                    currAccount.log.add("Buyer" + currAccount.username + "changed their profile details");
                 }
 
                 // add fund
@@ -92,6 +94,7 @@ public class Main {
                     int amount = scn.nextInt();
                     new Request(((Buyer) currAccount), amount);
                     System.out.println("your funds will be transferred once an admin approves your request.");
+                    currAccount.log.add("Buyer" + currAccount.username + "has requested €" + amount);
                 }
 
                 // TODO: add to shopping cart
@@ -99,7 +102,7 @@ public class Main {
                 if (choice == 3) {
                     int index = 1;
                     for (Category category : Category.categories) {
-                        System.out.println(index + " - " + category.name);
+                        System.out.println(index + " - " + category.category_name);
                         index += 1;
                     }
                     int subChoice = scn.nextInt();
@@ -113,9 +116,11 @@ public class Main {
                     System.out.println(" ------------------------------- ");
                     Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).display_comments();
 
+                    System.out.println("1 - add to shopping cart \n2 - back");
                     int subsubsubchoice = scn.nextInt();
                     if (subsubsubchoice == 1){
                         ((Buyer) currAccount).addToCart(Category.categories.get(subChoice - 1).products.get(subsubchoice - 1));
+                        currAccount.log.add("buyer " + currAccount.username + " has added " + Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).name + " to their shopping cart");
                     }
                     if (subsubsubchoice == 2){
                         //back
@@ -124,7 +129,7 @@ public class Main {
 
                 // search for a product
                 if (choice == 4) {
-                    System.out.println("enter product name:");
+                    System.out.println("enter product category_name:");
                     String name = scn.next();
                     Product searched_for_product = Shop.find_product(name);
                     searched_for_product.displayProduct();
@@ -133,6 +138,7 @@ public class Main {
                     int choicechoice = scn.nextInt();
                     if (choicechoice == 1){
                         ((Buyer) currAccount).addToCart(searched_for_product);
+                        currAccount.log.add("buyer " + currAccount.username + " has added " + searched_for_product.name + " to their shopping cart.");
                     }
                     if (choicechoice == 2){
                         // back
@@ -140,6 +146,7 @@ public class Main {
                 }
 
                 //TODO: buy
+                //TODO: add balance to seller
                 // shopping cart
                 if (choice == 5) {
                     int index = 1;
@@ -154,7 +161,8 @@ public class Main {
                     int choice2 = scn.nextInt();
                     if (choice2 == 1){
                         if (currAccount.balance > totalPrice){
-                            new Order((Buyer) currAccount, totalPrice);
+                            ((Buyer) currAccount).orders_list.add(new Order((Buyer) currAccount, totalPrice));
+                            currAccount.log.add(currAccount.username + " has bought every item in their shopping cart.");
                         }
                         else {
                             System.out.println("insufficient balance");
@@ -167,16 +175,13 @@ public class Main {
 
                 // logout
                 if (choice == 6) {
+                    System.out.println(currAccount.username + " logged out");
                     currAccount = null;
                 }
             }
 
             // seller menu
             while (currAccount instanceof Seller) {
-                //test zone
-
-                //test zone
-
                 // request selling certificate
                 new Request((Seller) currAccount);
 
@@ -190,6 +195,8 @@ public class Main {
 
                     ((Seller) currAccount).username = companyName;
                     ((Seller) currAccount).password = password;
+
+                    currAccount.log.add("Seller " + currAccount.username + " changed their profile details");
                 }
 
                 // available products
@@ -200,7 +207,7 @@ public class Main {
 
                     // add products
                     if (choice == 1) {
-                        System.out.println("name: ");
+                        System.out.println("category_name: ");
                         String name = scn.next();
                         System.out.println("price: ");
                         double price = scn.nextDouble();
@@ -209,9 +216,8 @@ public class Main {
                         System.out.println("category: ");
                         String category_str = scn.next();
                         Category category = Category.find_category(category_str);
-                        Product newProduct = new Product(name, price, stock, category);
+                        Product newProduct = new Product(name, price, stock, (Seller) currAccount);
                         ((Seller) currAccount).sellerProducts.add(newProduct);
-                        category.products.add(newProduct);
                     }
 
                     // remove products
@@ -268,8 +274,12 @@ public class Main {
                 if (choice == 4) {
                     Order.display_orders();
                     int subchoice = scn.nextInt();
-                    ((Admin) currAccount).approve_order(Order.orders.get(subchoice - 1));
-                    Order.orders.remove(subchoice - 1);
+                    Order chosenOrder = Shop.orders.get(subchoice - 1);
+                    ((Admin) currAccount).approve_order(chosenOrder);
+                    // removing from both order lists
+                    chosenOrder.buyer.orders_list.remove(chosenOrder);
+                    Shop.orders.remove(subchoice - 1);
+
                 }
 
                 // certificates

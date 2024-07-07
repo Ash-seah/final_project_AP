@@ -9,7 +9,7 @@ public class Account {
 
     // TODO: remove something from shoppingcart
     HashMap<Product, Integer> shoppingCart = new HashMap<>();
-    ArrayList<Product> purchasedProducts = new ArrayList<>();
+    ArrayList<String> log = new ArrayList<>();
 
     double balance = 0.0;
 
@@ -32,8 +32,24 @@ class Admin extends Account {
         request.seller.selling_cert = true;
     }
 
-    public void approve_order(Order order){
+    public boolean approve_order(Order order){
+        for (Product product : order.buyer.shoppingCart.keySet()){
+            if (product.stock >= order.buyer.shoppingCart.get(product)){
+                product.stock -= order.buyer.shoppingCart.get(product);
+            }
+            else {
+                System.out.println("insufficient stock");
+                return false;
+            }
+        }
         order.buyer.balance -= order.totalprice;
+        for (Product product : order.buyer.shoppingCart.keySet()){
+            product.seller.balance += order.buyer.shoppingCart.get(product) * product.price * 0.9;
+            Shop.totalProfit += order.buyer.shoppingCart.get(product) * product.price * 0.1;
+        }
+        order.buyer.bought_list.putAll(order.buyer.shoppingCart);
+        order.buyer.shoppingCart.clear();
+        return true;
     }
 
     public Admin(String username, String password, String emailAddress) {
@@ -53,6 +69,9 @@ class Buyer extends Account {
         super(username, password, emailAddress, phoneNumber, address, Access.BUYER);
     }
 
+    HashMap<Product, Integer> bought_list = new HashMap<Product, Integer>();
+    ArrayList<Order> orders_list = new ArrayList<>();
+
     public void addToCart(Product product){
         if (this.shoppingCart.containsKey(product)){
             this.shoppingCart.put(product, this.shoppingCart.get(product) + 1);
@@ -61,6 +80,7 @@ class Buyer extends Account {
             this.shoppingCart.put(product, 1);
         }
     }
+
 
 //    public void buyCart(HashMap cart){
 //        if (product.stock >= amount && this.balance >= product.price){

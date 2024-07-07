@@ -1,19 +1,24 @@
 import java.util.ArrayList;
 
 public class Category {
-    String name;
+    String category_name;
+    Category category;
     ArrayList<Product> products = new ArrayList<>();
     static ArrayList<Category> categories = new ArrayList<>();
 
+    public Category(){
+
+    }
     public Category(String name) {
-        this.name = name;
+        this.category_name = name;
+        this.category = this;
         Category.categories.add(this);
     }
 
-    // TODO: in case category name is incorrect
+    // TODO: in case category category_name is incorrect
     public static Category find_category(String name){
         for (Category category : Category.categories){
-            if (category.name.equals(name)){
+            if (category.category_name.equals(name)){
                 return category;
             }
         }

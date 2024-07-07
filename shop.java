@@ -12,6 +12,8 @@ public class Shop {
 
     static ArrayList<Account> customers = new ArrayList<>();
     static ArrayList<Product> products = new ArrayList<>();
+    static ArrayList<Order> orders = new ArrayList<>();
+    //TODO: orders arraylist
 
     static double totalProfit;
 

@@ -1,25 +1,26 @@
 import java.util.*;
 
-public class Product {
+public class Product extends Category {
+    Seller seller;
     String name;
     double price;
     int stock;
-    Category category;
     ArrayList<String> comments;
 
-    public Product(String name, double price, int stock, Category category){
+    public Product(String name, double price, int stock, Seller seller){
         this.name = name;
         this.price = price;
         this.stock = stock;
-        this.category = category;
+        this.seller = seller;
         Shop.products.add(this);
+        category.products.add(this);
     }
 
     public void displayProduct() {
         System.out.println("Product Name: " + name);
-        System.out.println("Price: " + "$" + price);
+        System.out.println("Price: " + "€" + price);
         System.out.println("Quantity: " + stock);
-        System.out.println("Category: " + category.name);
+        System.out.println("Category: " + category.category_name);
         System.out.println("Comments: " + comments);
     }
     public void display_comments() {
