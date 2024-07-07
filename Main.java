@@ -21,11 +21,12 @@ public class Main {
 //        electronics.products.add(new Product("SAMSUNG TV", 499.99, 10, electronics));
 //        furniture.products.add(new Product("SAMSUNG smart couch", 238.90, 10, furniture));
 //        furniture.products.add(new Product("intelligent chair", 993.56, 10, furniture));
-//        books.products.add(new Product("meditations", 999.99, 10, books));
-//        books.products.add(new Product("metamorphosis", 29.99, 10, books));
+//        books.products.add(new Product("meditations", 999.99, 10, ));
+//        books.products.add(new Product("metamorphosis", 29.99, 10,));
         //test zone
 
         // register/login menu
+
         while (true) {
             while (currAccount == null) {
                 System.out.println("1 - Login \n2 - Register");
@@ -37,6 +38,7 @@ public class Main {
                         currAccount = login(usr, pwd);
                         if (currAccount == null) {
                             System.out.println("dne");
+                            break;
                         }
                         System.out.println(currAccount.username);
                         break;
@@ -74,6 +76,8 @@ public class Main {
                 currAccount.shoppingCart.put(electronics.products.get(0), 5);
                 // test zone
 
+                System.out.println("balance: €" + currAccount.balance);
+
                 System.out.println("1 - edit profile \n2 - add funds \n3 - see products \n" +
                         "4 - search for a product \n5 - shopping cart \n6 - logout");
                 int choice = scn.nextInt();
@@ -97,9 +101,8 @@ public class Main {
                     currAccount.log.add("Buyer" + currAccount.username + "has requested €" + amount);
                 }
 
-                // TODO: add to shopping cart
                 // see products
-                if (choice == 3) {
+                while (choice == 3) {
                     int index = 1;
                     for (Category category : Category.categories) {
                         System.out.println(index + " - " + category.category_name);
@@ -116,39 +119,50 @@ public class Main {
                     System.out.println(" ------------------------------- ");
                     Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).display_comments();
 
-                    System.out.println("1 - add to shopping cart \n2 - back");
+                    System.out.println("1 - add to shopping cart \n2 - add comment \n3 - back");
                     int subsubsubchoice = scn.nextInt();
                     if (subsubsubchoice == 1){
-                        ((Buyer) currAccount).addToCart(Category.categories.get(subChoice - 1).products.get(subsubchoice - 1));
+                        System.out.println("how many?");
+                        int count = scn.nextInt();
+                        ((Buyer) currAccount).addToCart(Category.categories.get(subChoice - 1).products.get(subsubchoice - 1), count);
                         currAccount.log.add("buyer " + currAccount.username + " has added " + Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).name + " to their shopping cart");
                     }
+
                     if (subsubsubchoice == 2){
-                        //back
+                        String comment = scn.next();
+                        Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).add_comment(comment);
+                    }
+
+                    if (subsubsubchoice == 3){
+                        break;
                     }
                 }
-
                 // search for a product
-                if (choice == 4) {
+                while (choice == 4) {
                     System.out.println("enter product category_name:");
                     String name = scn.next();
                     Product searched_for_product = Shop.find_product(name);
                     searched_for_product.displayProduct();
                     searched_for_product.display_comments();
-                    System.out.println("1 - Buy \n2 - back");
+                    System.out.println("1 - add to shopping cart \n2 - add comment \n3 - back");
                     int choicechoice = scn.nextInt();
                     if (choicechoice == 1){
-                        ((Buyer) currAccount).addToCart(searched_for_product);
+                        System.out.println("how many?");
+                        int count = scn.nextInt();
+                        ((Buyer) currAccount).addToCart(searched_for_product, count);
                         currAccount.log.add("buyer " + currAccount.username + " has added " + searched_for_product.name + " to their shopping cart.");
                     }
                     if (choicechoice == 2){
-                        // back
+                        String comment = scn.next();
+                        searched_for_product.add_comment(comment);
+                    }
+                    if (choicechoice == 3){
+                        break;
                     }
                 }
 
-                //TODO: buy
-                //TODO: add balance to seller
                 // shopping cart
-                if (choice == 5) {
+                while (choice == 5) {
                     int index = 1;
                     double totalPrice = 0;
                     for (Product product : currAccount.shoppingCart.keySet()) {
@@ -157,7 +171,7 @@ public class Main {
                         index += 1;
                     }
                     System.out.println("total price is: " + totalPrice);
-                    System.out.println("1 - Buy \n2 - Back");
+                    System.out.println("1 - Buy \n2 - remove from shopping cart \n3 - Back");
                     int choice2 = scn.nextInt();
                     if (choice2 == 1){
                         if (currAccount.balance > totalPrice){
@@ -169,6 +183,12 @@ public class Main {
                         }
                     }
                     if (choice2 == 2){
+                        System.out.println("enter the name of the product that you wish to remove from your shopping cart");
+                        Product product = Shop.find_product(scn.next());
+                        System.out.println("how many of said product do you wish to remove");
+                        ((Buyer) currAccount).removeFromCart(product, scn.nextInt());
+                    }
+                    if (choice2 == 3){
                         // back
                     }
                 }
@@ -177,13 +197,17 @@ public class Main {
                 if (choice == 6) {
                     System.out.println(currAccount.username + " logged out");
                     currAccount = null;
+                    break;
                 }
             }
 
             // seller menu
             while (currAccount instanceof Seller) {
                 // request selling certificate
-                new Request((Seller) currAccount);
+
+                new Product("ee", 20, 43, (Seller) currAccount, "eeeeeeeeee", beauty);
+
+                System.out.println("balance: €" + currAccount.balance);
 
                 System.out.println("1 - edit profile \n2 - available products \n3 - logout");
                 int n = scn.nextInt();
@@ -200,26 +224,29 @@ public class Main {
                 }
 
                 // available products
-                if (n == 2 && ((Seller) currAccount).selling_cert) {
+                while (n == 2 && ((Seller) currAccount).selling_cert) {
                     ((Seller) currAccount).display_available_products();
-                    System.out.println("1 - add product \n2 - remove product");
+                    System.out.println("1 - add product \n2 - remove product \n3 - back");
                     int choice = scn.nextInt();
 
                     // add products
                     if (choice == 1) {
-                        System.out.println("category_name: ");
+                        System.out.println("product name: ");
                         String name = scn.next();
                         System.out.println("price: ");
                         double price = scn.nextDouble();
                         System.out.println("stock: ");
                         int stock = scn.nextInt();
-                        System.out.println("category: ");
-                        String category_str = scn.next();
-                        Category category = Category.find_category(category_str);
-                        Product newProduct = new Product(name, price, stock, (Seller) currAccount);
+                        System.out.println("information: ");
+                        String information = scn.next();
+                        System.out.println("Category: ");
+                        Category category = Category.find_category(scn.next());
+                        Product newProduct = new Product(name, price, stock, (Seller) currAccount, information, category);
                         ((Seller) currAccount).sellerProducts.add(newProduct);
+                        currAccount.log.add("seller " + currAccount.username + " has added product " + newProduct.name + " to the product catalogue");
                     }
 
+                    //TODO: remove more than one product at once
                     // remove products
                     if (choice == 2) {
                         int index = 1;
@@ -228,18 +255,33 @@ public class Main {
                             index += 1;
                         }
                         int subchoice = scn.nextInt();
-                        if (((Seller) currAccount).sellerProducts.get(subchoice - 1).stock > 1) {
-                            ((Seller) currAccount).sellerProducts.get(subchoice - 1).stock -= 1;
+                        System.out.println("how many do you want to remove of said item?");
+                        int amount_to_remove = scn.nextInt();
+                        if (((Seller) currAccount).sellerProducts.get(subchoice - 1).stock > amount_to_remove) {
+                            ((Seller) currAccount).sellerProducts.get(subchoice - 1).stock -= amount_to_remove;
+                            currAccount.log.add("Seller " + currAccount.username + " removed 1 instance of product" + ((Seller) currAccount).sellerProducts.get(subchoice - 1).name + "from the product catalogue");
                         } else {
                             ((Seller) currAccount).sellerProducts.get(subchoice - 1).category.products.remove(((Seller) currAccount).sellerProducts.get(subchoice - 1));
+                            Shop.products.remove(((Seller) currAccount).sellerProducts.get(subchoice - 1));
+                            currAccount.log.add("Seller " + currAccount.username + " removed product" + ((Seller) currAccount).sellerProducts.get(subchoice - 1).name + "from the product catalogue");
                             ((Seller) currAccount).sellerProducts.remove(subchoice - 1);
                         }
                     }
+
+                    // back
+                    if (choice == 3){
+                        break;
+                    }
+                }
+                if (n == 3){
+                    currAccount.log.add(currAccount.username + " logged out");
+                    currAccount = null;
+                    break;
                 }
             }
 
             while (currAccount instanceof Admin) {
-                System.out.println("1 - promote to admin \n2 - add fund \n3 - fund requests \n4 - orders \n5 - certificates \n6 - logout");
+                System.out.println("1 - promote to admin \n2 - add fund \n3 - fund requests \n4 - orders \n5 - certificates \n6 - see user logs \n7 - logout");
                 int choice = scn.nextInt();
 
                 // promote to admin
@@ -287,12 +329,23 @@ public class Main {
                     Request.display_selling_certs();
                     int subChoice = scn.nextInt();
                     ((Admin) currAccount).approve_selling_cert(Request.sellingCertRequestsList.get(subChoice - 1));
-                    Request.fundRequestsList.remove(subChoice - 1);
+                    Request.sellingCertRequestsList.remove(subChoice - 1);
+                }
+
+
+                if (choice == 6){
+                    System.out.println("enter username:");
+                    String username = scn.next();
+                    Account account = Shop.find_account(username);
+                    for (String str : account.log){
+                        System.out.println(str);
+                    }
                 }
 
                 // logout
-                if (choice == 6) {
+                if (choice == 7) {
                     currAccount = null;
+                    break;
                 }
             }
 

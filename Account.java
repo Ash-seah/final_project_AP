@@ -72,12 +72,21 @@ class Buyer extends Account {
     HashMap<Product, Integer> bought_list = new HashMap<Product, Integer>();
     ArrayList<Order> orders_list = new ArrayList<>();
 
-    public void addToCart(Product product){
+    public void addToCart(Product product, int count){
         if (this.shoppingCart.containsKey(product)){
-            this.shoppingCart.put(product, this.shoppingCart.get(product) + 1);
+            this.shoppingCart.put(product, this.shoppingCart.get(product) + count);
         }
         else {
-            this.shoppingCart.put(product, 1);
+            this.shoppingCart.put(product, count);
+        }
+    }
+
+    public void removeFromCart(Product product, int count){
+        if (this.shoppingCart.get(product) > count){
+            this.shoppingCart.put(product, this.shoppingCart.get(product) - count);
+        }
+        else {
+            this.shoppingCart.remove(product);
         }
     }
 
@@ -105,6 +114,7 @@ class Seller extends Account {
 
     public Seller(String username, String password) {
         super(username, password, null, null, null, Access.SELLER);
+        new Request(this);
     }
     public void remove_product(Product product){
         this.sellerProducts.remove(product);

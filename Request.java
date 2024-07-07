@@ -18,6 +18,11 @@ public class Request {
     }
 
     public static void display_selling_certs(){
+//        Request request;
+//        for (int i = 0; i < Request.sellingCertRequestsList.size(); i++){
+//            request = Request.sellingCertRequestsList.get(i);
+//            System.out.println((i + 1) + " - " + request.seller.username);
+//        }
         int index = 1;
         for (Request request : Request.sellingCertRequestsList){
             System.out.println(index + " - " + request.seller.username);
@@ -28,7 +33,7 @@ public class Request {
     public static void display_fund_requests(){
         int index = 1;
         for (Request request : Request.fundRequestsList){
-            System.out.println(index + " - " + request.requester.username + " --- " + "€" + request.amount);
+            System.out.println(index + " - " + request.requester.username + " --- €" + request.amount);
             index += 1;
         }
     }
