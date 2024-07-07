@@ -6,7 +6,7 @@ public class Product extends Category {
     String name;
     double price;
     int stock;
-    ArrayList<String> comments;
+    ArrayList<String> comments = new ArrayList<>();
 
     public Product(String name, double price, int stock, Seller seller, String information, Category category){
         super(category.category_name);

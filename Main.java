@@ -69,11 +69,8 @@ public class Main {
 
             // buyer menu
             while (currAccount instanceof Buyer) {
-                // TODO: add comment
                 // test zone
-                currAccount.shoppingCart.put(books.products.get(0), 2);
-                currAccount.shoppingCart.put(beauty.products.get(0), 4);
-                currAccount.shoppingCart.put(electronics.products.get(0), 5);
+
                 // test zone
 
                 System.out.println("balance: €" + currAccount.balance);
@@ -117,7 +114,10 @@ public class Main {
                     int subsubchoice = scn.nextInt();
                     Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).displayProduct();
                     System.out.println(" ------------------------------- ");
-                    Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).display_comments();
+                    if (Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).comments != null){
+                        Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).display_comments();
+                    }
+
 
                     System.out.println("1 - add to shopping cart \n2 - add comment \n3 - back");
                     int subsubsubchoice = scn.nextInt();
@@ -129,7 +129,8 @@ public class Main {
                     }
 
                     if (subsubsubchoice == 2){
-                        String comment = scn.next();
+                        scn.nextLine();
+                        String comment = scn.nextLine();
                         Category.categories.get(subChoice - 1).products.get(subsubchoice - 1).add_comment(comment);
                     }
 
@@ -189,7 +190,7 @@ public class Main {
                         ((Buyer) currAccount).removeFromCart(product, scn.nextInt());
                     }
                     if (choice2 == 3){
-                        // back
+                        break;
                     }
                 }
 
@@ -203,9 +204,10 @@ public class Main {
 
             // seller menu
             while (currAccount instanceof Seller) {
-                // request selling certificate
 
                 new Product("ee", 20, 43, (Seller) currAccount, "eeeeeeeeee", beauty);
+
+                // request selling certificate
 
                 System.out.println("balance: €" + currAccount.balance);
 
@@ -281,6 +283,7 @@ public class Main {
             }
 
             while (currAccount instanceof Admin) {
+                System.out.println("Total profit  €" + Shop.totalProfit);
                 System.out.println("1 - promote to admin \n2 - add fund \n3 - fund requests \n4 - orders \n5 - certificates \n6 - see user logs \n7 - logout");
                 int choice = scn.nextInt();
 
@@ -332,7 +335,7 @@ public class Main {
                     Request.sellingCertRequestsList.remove(subChoice - 1);
                 }
 
-
+                // see user logs
                 if (choice == 6){
                     System.out.println("enter username:");
                     String username = scn.next();

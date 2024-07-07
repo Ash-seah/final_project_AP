@@ -5,14 +5,15 @@ public class Category {
     Category category;
     ArrayList<Product> products = new ArrayList<>();
     static ArrayList<Category> categories = new ArrayList<>();
-
     public Category(){
 
     }
     public Category(String name) {
         this.category_name = name;
         this.category = this;
-        Category.categories.add(this);
+        if (Category.categories.size() < 5){
+            Category.categories.add(this);
+        }
     }
 
     // TODO: in case category category_name is incorrect
