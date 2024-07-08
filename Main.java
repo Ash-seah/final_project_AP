@@ -69,10 +69,6 @@ public class Main {
 
             // buyer menu
             while (currAccount instanceof Buyer) {
-                // test zone
-
-                // test zone
-
                 System.out.println("balance: €" + currAccount.balance);
 
                 System.out.println("1 - edit profile \n2 - add funds \n3 - see products \n" +
@@ -206,8 +202,6 @@ public class Main {
             while (currAccount instanceof Seller) {
 
                 new Product("ee", 20, 43, (Seller) currAccount, "eeeeeeeeee", beauty);
-
-                // request selling certificate
 
                 System.out.println("balance: €" + currAccount.balance);
 
